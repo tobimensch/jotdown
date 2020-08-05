@@ -1,0 +1,838 @@
+) Title   ) Jotdown Specification
+===============================
+) AUTHORS ) Tobias Gläßer, Nobody Else
+) CREATED ) 2020/08/04 
+) LICENSE ) permissive FOSS license / attribution required
+) VERSION ) 0.1
+) SUMMARY ) Specification for a lightweight markup language
+) CHARSET ) utf8
+
+) CONTENT 
+
+) CHAPTER ) Introduction and principles
+=======================================
+Jotdown is a lightweight markup language whose philosophy is similar to Markdown's,
+but with a few significant differences.
+
+The guiding principles are:
+ - The raw format must make sense to untrained viewers.
+ - The raw format should look pleasing on the eye, albeit that's subjective.
+ - The rules must be consistent, to make processing straightforward.
+ - Allow for stylistic freedoms, such as indentation sizes, to accomodate different tastes and needs.
+ - Should have all features (not syntax) of Markdown/Commonmark 1.0.
+ - Should have most features (not syntax) of Asciidoc.
+ - Should look into supporting planning features from Orgmode.
+ - Should contain often requested features in other markup languages, like math support.
+ - Should be extendable.
+ 
+Scope:
+    Because Jotdown aims to be a replacement for many use cases of Markdown and Asciidoc among others,
+    the scope for which Jotdown could be of use is large. Usecases are:
+     - Ebooks
+     - Documentation
+     - Websites
+     - Specifications
+     - Books
+     - GitHub, GitLab and other source hosting sites
+     - Messaging
+     - Forums
+     - Wikis
+     - Organizing
+
+This document is the Jotdown specification, which is itself written in Jotdown.
+
+Tooling does currently ([\CREATED]) not exist, anyone is welcome to implement it.
+
+) CHAPTER ) Tooling
+======================================================
+Currently tooling for Jotdown doesn't exist.
+
+Anyone is welcome to develop their own Jotdown tooling using this specification.
+
+If you do so, please credit me for creating this specification.
+
+Here are some ideas on what the tooling could or should be like:
+ - The parser shouldn't fail due to ill-formated documents. It should instead pass through ill formated segments as is,
+   and continue by parsing the non-ill-formated segments of a Jotdown document.
+ - The parser should be written in a language, which can export symbols to C,
+   to achieve maximum interoperability with existing programming languages.
+ - There should be a reformatting tool, that uses best practices (and user preferences) to produce Jotdown documents
+   with consistent syntax and high quality formatting.
+ - Targeting output to HTML5, Markdown, Asciidoc and pandoc's internal format is highly desirable.
+ - The tools ideally will be licensed under a permissive FOSS license, so they can get used by anyone.
+ 
+) CHAPTER ) Meta information and key value store
+================================================
+
+The syntax for meta information is:
+    ```
+    ) KEY ) value
+    ```
+
+ ) CAPTION )      Meta keys
+ = Key            Description
+ | ABOUT          Description of the document. If none is given, the first heading is used.
+ | AUTHOR         Name of the author
+ | CREATED        Date (and possibly time) on which the document was created
+ | MODIFIED       Date (and possibly time) on which the document was last modified
+ | VERSION        Document version
+ | ENCODE         Usually `utf8`
+ | CONTACT        Contact information
+ | LICENSE        Copyright license the document is licensed under
+
+By convention the Jotdown keywords are written in capital letters, however the parser is required
+to behave case insensitive in regard to this.
+
+Meta information can be referenced inside the document.
+That's why you'll read in this sentence, that the author of the Jotdown specification is /[\AUTHOR]/.
+
+There's no restriction on custom usage, this feature is literally a key-value store.
+
+For example you could do this:
+    ```
+    ) myBlog ) http://mydomain.com/blog
+    
+    You're welcome to visit [\myBlog "My Blog"].
+    ```
+
+Or this:
+    ```
+    ) myBlog ) http://mydomain.com/blog "My Blog"
+    
+    You're welcome to visit [\myBlog].
+    ```
+
+In the preprocessing stage the square brackets get populated with the full content of the key value store,
+which leads to the finalized expression `[http://mydomain.com/blog "My Blog"]`,
+that is turned into a link to `http://mydomain.com/blog` with the link text `My Blog`.
+
+) CHAPTER ) Table of contents
+=============================
+
+The table of contents can be created as follows:
+    ```) CONTENT```
+
+) CHAPTER ) Headings, sections and chapters
+===========================================
+
+Jotdown supports different styles of headings.
+
+Book style:
+    ```
+    ) TITLE        ) Heading text
+    ) PART         ) Heading text
+    ) CHAPTER      ) Heading text
+    ) SECTION      ) Heading text
+    ) SUB          ) Heading text
+    ) SUBSUB       ) Heading text
+    ) PAGE
+    ```
+    
+    SUBSUB is the smallest kind of section. It can't be divided into smaller sections,
+    like an atom can't be divided into smaller atoms.
+    
+    atom := indivisable in Greek (Sorry, to all the nerds, that have known this all along)
+    
+    PAGEs are special, because what they're doing is to in effect cause a page break, but nothing else.
+  
+Simple style:
+    ```
+    ] Heading text
+    #] Heading text
+    ##] Heading text
+    ###] Heading text
+    ####] Heading text
+    #####] Heading text
+    ```
+
+Whitespace preceding headings is not allowed.
+
+For the simple heading style the combination of # and ] is used to simplify counting in your
+head and also for better looks.
+
+You may wonder why the simple style doesn't just follow Markdown's example. The reason is that Jotdown
+simply isn't Markdown, and has its own ideas on style and functionality trade-offs. Additionally there's
+a technical reason, which is that Jotdown aims to support the commonly used hash-tag character `#`
+at line beginnings without escaping requirements.
+
+) CHAPTER ) Font styles
+=======================
+
+Bold:
+    The red *fox* jumps around. (For single words only)
+    The red **fox jumps** around. (For multiple words)
+
+Extra-bold (strong):
+    The red ***fox jumps*** around. (For multiple words)
+    
+    This feature only makes sense for the web, where different levels of bold are supported.
+  
+Literal:
+    The red """*fox* jumps""" around.
+    The red '''**fox** jumps''' around.
+
+Cursive/Italic:
+    The red /fox/ jumps around. (For single words only)
+    The red //fox jumps// around. (For multiple words)
+  
+Strike-through:
+    The red ~fox~ jumps around. (For single words only)
+    The red ~~fox jumps~~ around. (For multiple words)
+
+Underlined:
+    The red _fox_ jumps around. (For single words only)
+    The red __fox jumps__ around. (For multiple words)
+
+Superscript:
+    The red ^fox^ jumps around. (For single words only)
+    The red ^^fox jumps^^ around. (For multiple words)
+
+Subscript:
+    The red ,fox, jumps around. (For single words only)
+    The red ,,fox jumps,, around. (For multiple words)
+  
+Colored foreground:
+    The red Red\fox\ jumps around. (For single words only)
+    The red Red\\fox jumps\\ around. (For multiple words)
+  
+Colored background:
+    The red !Yellow\fox\ jumps around. (For single words only)
+    The red !Yellow\\fox jumps\\ around. (For multiple words)
+
+Colored foreground and background:
+    The red Red!Yellow\fox\ jumps around. (For single words only)
+    The red Red!Yellow\\fox jumps\\ around. (For multiple words)
+
+Colored foreground and background using hex values:
+    The red ff0000!ffff00\fox\ jumps around. (For single words only)
+    The red ff0000!ffff00\\fox jumps\\ around. (For multiple words)
+    - The hex codes are case insensitive, thus FF0000 and ff0000 work the same.
+
+Monospace:
+    The red `fox jumps` around. (For multiple words)
+    The red ``fox jumps`` around. (For multiple words)
+    The red ```fox jumps``` around. (For multiple words)
+  
+Quotes:
+    The red "fox" jumps around. (For single words)
+    The red ""fox jumps"" around. (For multiple words)
+    The red 'fox' jumps around. (For single words)
+    The red ''fox jumps'' around. (For multiple words)
+
+(Small) capitals:
+    The red VVfox jumpsVV around. (For multiple words)
+
+Relative font size:
+    ```The red 12;fox jumps;; around. (For multiple words)```
+    The red 12;fox jumps;; around. (For multiple words)
+    - Here 10 is the base size of the font, that is used by default.
+    - 12 is relative to that, which means that the font size increases by 20%
+    - i.e. 20 would be a doubling of the font size
+    
+Pixel font size:
+    ```The red 22px;fox jumps;; around. (For multiple words)```
+    The red 22px;fox jumps;; around. (For multiple words)
+
+User style macros:
+    ) ::boldred ) Red\**JAYDEE**\
+    I'm using the ::boldred(amazing bold red) user style here.
+    I'm using the ::boldred(macro again), how great is that.
+
+How user style macros work:
+    - the syntax for defining a user style macro is `) ::STYLE ) JotdownJAYDEEJotdown`
+    - JAYDEE is the Jotdown content before the macro is applied, here `amazing bold red`
+    - after JAYDEE is inserted the Jotdown gets interpreted
+    - the result of that Jotdown interpretation gets inserted into the sentence.
+    
+All styles are supposed to work on parts of words, too. Ie.:
+    ) CAPTION ) Here we expect the present in presentation to be presented with bold highlighting
+    ```demo jd
+    **Present**ations are sometimes boring.
+    ```
+Styles must be invoked directly before a word, with no whitespace between the style invokation
+and the word, and styles must end directly after the end of a word. 
+This is an important constraint in the pursuit of keeping parsers from becoming overcomplicated.
+
+Nesting of styles:
+    Hello **bold VVcapitalsVV rule** the world.
+    Hello **VVbold capitals ruleVV** the world.
+    Hello Green&Red\\**VVbold capitals ruleVV**\\ the world.
+
+NOTE:
+    It is likely that Jotdown parsers will be able to make syntax work for multiple words,
+    that only works for single words according to this specification,
+    The reason that this specification is not calling for such support right away is,
+    because some of those features will lead to more complicated parsers that would likely
+    cause some conflicting syntax possibilities and difficulty with parsing nested constructions.
+    The syntax that is supporting multiple words according to this specification is generally easier to parse.
+     
+) SECTION ) Supported color codes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+See: https://www.w3schools.com/colors/colors_groups.asp
+
+The color names are supported case insensitively.
+
+) CHAPTER ) Embedding code
+==========================
+
+Default:
+    ```
+    #!/bin/bash
+    echo "hello"
+    ```
+
+With specified language:
+    ```nim
+    echo "hello"
+    ```
+
+Inline:
+    Try ```echo "hello"```.
+    Try nim```echo "hello"```.
+
+When the code's language is defined, the generated output may contain highlighting for that code.
+
+This syntax was copied from Markdown, because it works well.
+
+) CHAPTER ) Lists
+=================
+
+| `-`, • (Unicode bullet character) | can be used for bullet lists
+| `#.`, and numerals                | can be used for lists with numbers
+
+ - This is a short
+ - bullet list that
+ - just serves as
+ - an example
+ ~~~~~~~-~~~~~~~
+ #. Number one
+ #. Number two
+ #. Number three
+
+ 1. Number one
+ 2. Number two
+ 3. Number three
+
+Lists can be nested.
+
+ - This is a bullet list
+   1. Containing a numbered list
+   2. With two numbers
+ - And here's another list item
+   - Subitem
+   - Another subitem
+     #. Numbers
+     #. More numbers
+    
+Checklist:
+~~~~~~~~~~
+ [ ] Unchecked item
+ [x] Checked item
+ [ ] Another unchecked item
+
+Radiolist:
+~~~~~~~~~~
+ (x) Selected
+ ( ) Not selected
+ ( ) Also not selected
+
+Whitespace is used for nested lists, but it is usually also used on unnested lists to make them look nicer.
+
+Here's an example *without* leading whitespace:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- This is a bullet list
+- without whitespaces infront.
+
+) CHAPTER ) Input fields and user interface
+===========================================
+
+This is an experimental idea. Mostly food for thought.
+
+) FORM ) POST@someServer/ on submit
+) FORMVALIDATE ) """
+    name  is Person
+    email is EMail
+    text  has 80<Length>500
+    """
+[__name___] Name
+[__email__] E-Mail
+[________ ]
+[__text__ ] Please type in your complaints.
+[________ ]
+[<_submit_>] Submit [<_reset_>] Reset
+
+
+) CHAPTER ) Definitions
+=======================
+
+Definition := What something is, written in a single line.
+
+Definition :=
+    What something is.
+    Written down.
+    With multiple lines.
+    Indentation based.
+    | Small | Table
+
+Definition :=
+:= Defining something so everybody knows what it is.
+:= Describing a word with words.
+   | Define | A | Word
+
+The `:=` syntax is inspired by golang.
+
+) CHAPTER ) Alignment
+===============================
+
+) SECTION ) Left, Right, Center
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This is just normal text, which is left aligned.
+
+                >> This text is right aligned.
+ 
+By convention right aligned text is indented with 16 spaces.
+
+    <> This text is centered.
+
+    < This text is centered. >
+
+By convention centered text is intended with 4 spaces.
+
+In both cases these are merely conventions and writing down left aligned or
+centered text without those preceding spaces works fine, too.
+
+<< This is an explicit left alignment. Not necessary in almost all cases,
+as left alignment is the default alignment.
+
+) SECTION ) Indentation blocks
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Example:
+    Example
+
+At least two spaces are needed to create an indentation block.
+
+) CHAPTER ) Tables
+==================
+
+Whitespace separated table:
+    = Column       Another One         Third One
+    | hi           hello               ciao
+    | bye          goodbye             arrividerci
+  
+Pipe separated table:
+    = Column       | Another One       | Third One
+    | hi           | hello             | ciao
+    | bye          | goodbye           | arrividerci
+  
+One line table:
+    | Key          | abcdef            | It's a bad key
+    
+Table with caption:
+    ) CAPTION )   Table example that shows how to use captions.
+    = Column      Second Column       Third Column
+    | One         Two                 Three
+    | Four        Five                Six
+    | Seven       Eight               Nine
+  
+Nested tables:
+    = Header       | Column Two
+    | Some row     | =(I'm a nested table         | Second Column)
+                      (Second row of nested table | Column Two   )
+    | Next row     | Not nested this time
+  
+    Nested table rows begin with `=()` or `|()`.
+  
+Span over multiple cells:
+    | Row1    | Col 2     | Col 3 
+    [ Row2 is full width
+    | Row3    [ Col2 and Col3 together
+
+Table with foot:
+    = Head    | Col2      | Col3
+    | Content | More      | More
+    | More    | More      | More
+    _ Foot    | Feet      | Foot
+    
+Table with multiple bodies:
+    = Head    | Col2      | Col3
+    | Content | More      | More
+    | More    | More      | More
+    + More    | More      | More
+    | More    | More      | More
+    | More    | More      | More
+    _ Foot    | Feet      | Foot
+    
+Table with row spanning:
+    ( CAPTION ( In this example the rows with Head 1, 2 and 3 are actually the same row
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    = Head    | Col2      | Col3
+    | Content | More      | More
+    | More    | More      | More
+    | 1       | More      | More
+    . 2       . More      . More
+    . 3       . More      . More
+    | More    | More      | More
+    _ Foot    | Feet      | Foot
+  
+`=` is used to signify a header. Leading whitespaces after = and | get
+ignored because it looks better that way. `=` is only used for the first column,
+and all other columns of the same row are automatically part of the header.
+This makes it easier to turn headers off and on.
+
+`_` only gets used as part of syntax when used as a footer of a table. In all other cases,
+when by itself, this character is just a literal character.
+
+`+` is used to separate two table bodies. It signifies the first row of the next table body.
+
+Table type two //(needs a better name)//:
+    == Source
+    | ```The red **fox jumps** around.```
+    | Row 2: Example source is above me
+    == View
+    | The red **fox jumps** around.
+    | Row 2: The view of the exampel is above me
+  
+For table type two, or TTT, `==` signifies a column, that can contain multiple rows,
+separated by newlines starting with a `|`.
+TTT may be easier to write in some cases, and exists purely for convenience.
+
+) CHAPTER ) Links
+=================
+
+Jotdown allows for great flexibility in how links can be formatted,
+because it's a feature that is frequently used, and therefore convenience is ranked higher than consistency.
+
+Simple automatic links:
+    ```
+    www.google.com
+    google.com
+    http://www.google.com
+    ```
+
+Linktext:
+    ```
+    [Google]www.google.com     (Text can be on the left)
+    www.google.com[Google]     (Or on the right)
+    [Google](www.google.com)   (Parenthesis are optional)
+    (www.google.com)[Google]   ...
+    [www.google.com Google]    (Links can inside square brackets as well)
+    [http://google.com]        (Description text not necessary)
+    ```
+  
+) CHAPTER ) References
+======================
+  
+[\CHAPTER\References References to this chapter.] 
+[\CHAPTER\Links References to Links chapter.] 
+
+) CHAPTER ) Footnotes
+=====================
+
+This sentence is followed by a footnote.[1](http://www.google.com[Google])
+
+  As you see the text and link for a footnote can be appended directly at the place
+  where the footnote is created.
+
+[1] :_
+    Some thing to note in this footnote.
+
+Footnotes can be redefined at any time. 
+
+) CHAPTER ) Boxes
+=================
+
+Warning:
+    WARN: This is a warning box.
+    WARN:
+        This is a warning box
+        with multiple lines.
+  
+Information:
+    INFO: This is an information box.
+    INFO:
+        This is an information box
+        with multiple lines.
+
+Important:
+    ACME: This is an important box.
+    ACME:
+        This is an important information box
+        with multiple lines.
+    
+Note:
+    NOTE: This is a box for a note.
+    NOTE:
+        Box for a note
+        with multipe lines.
+
+Tip/Hint:
+    HINT: This is a box for a hint.
+    HINT:
+        Box for a hint
+        with multiple ines.
+
+All boxes are written with capital letters and have exactly 4 letters,
+so that they are more easily distinguished.
+
+) CHAPTER ) Embedding media
+===========================
+
+This text is very lazy and now look at an image:
+[http://somecrazy.jpg Alternative text]
+
+This text is very lazy and now look at an image:
+[http://somecrazy.jpg 500x400 Alternative text]
+
+This text is very lazy and now look at a centered image:
+                                <[http://somecrazy.jpg 500x400 Alternative text]>
+    
+This text is very lazy and now look at a centered image, with a caption:
+    ] CAPTION ] This is a test caption for an image
+    <[http://somecrazy.jpg 500x400 Alternative text]>
+
+This text is very lazy and now look at a right-aligned image:
+                >>[http://somecrazy.jpg 500x400 Alternative text]
+
+Embedding a YouTube video:
+[http://www.youtube.com/... Alternative text]
+
+Embedding a YouTube video:
+[http://www.youtube.com/... 500x400 Alternative text]
+
+) CHAPTER ) Date and time
+=========================
+
+The issue is that there are many local differences, so to make this
+intuitive for an international user base, won't be easy.
+
+*TODO*
+
+) CHAPTER ) Breaks
+==================
+
+Horizontal line break:
+    ```
+    ---
+    ----
+    ---------------------
+    ```
+    
+    Any length of `-` that is equal to three or greater than three is a valid horizontal break.
+    Due to this you don't need to count key strokes when quickly jotting down a document.
+    As an added advantage long strings of `-` also look more clearly like horizontal line breaks.
+
+Stylistic breaks:
+    ```
+    ===
+    =====================
+    ~~~ 
+    ~~~~~~~~~~~~~~~~~~~~~
+    ```
+    
+    Any length of `=` or `~` that is equal to three or greater than three is a valid stylistic break.
+    Due to this you don't need to count key strokes when quickly jotting down a document.
+    In contrast to horizontal line breaks, stylistic breaks **will not have an influence on generated output**.
+    They are only visible in raw Jotdown documents.
+    For example they can be used as separators between headlines and content.
+
+Content breaks:
+    ```
+    ~~~---~~~
+    -~~~~~~~-
+    -~~~~~~~-
+    -~-
+    _~_
+    _~~~~~~~_
+    _~~~_
+    .~~~.
+    ~
+    ```
+    Line of length 3 or greater (not counting leading identations) that contains at least one `~`, and any
+    amount of either `_` or `-` or `.` characters, with no unspecified characters in the line.
+    
+    Contents breaks can be used to separate two lists or two tables, or a table from what follows after it,
+    or for separating content from other content, without causing a new paragraph to be inserted.
+    
+    No new paragraph will be created in the output, while the content is still semantically/visually separated.
+    
+    Alternatively you can use one `~` in a line by itself, with no other characters in that line (except for
+    leading whitespace due to indentations).
+    
+    Example:
+        ```
+         - Apple
+         - Banana
+         - Orange
+         ~
+         - Bird
+         - Fish
+         - Deer
+        ```
+    ACME:
+        Do we really need this? Need to gather some real use cases...
+  
+Page break:
+  ```
+  XXX  
+  ```
+
+) CHAPTER ) Including other documents and files
+===============================================
+
+The content of this file will be sourced and passed through without modifications:
+    ```[[/path/to/some/file]]```
+
+The content of this file will be interpreted as Jotdown:
+    ```[/path/to/some/file.jd]```
+    
+The content of this file will be interpreted as Jotdown:
+    ```[/path/to/some/file text/jotdown]```
+
+The content of this file will be interpreted as Jotdown, chapter One will be included:
+    ```[/path/to/some/file.jd /CHAPTER/One]```
+    
+The content of this file will be interpreted as Jotdown, chapter One will be included:
+    ```[/path/to/some/file text/jotdown /CHAPTER/One]```
+
+) CHAPTER ) Passing through HTML
+================================
+
+This feature from Markdown comes in handy whenever the lightweight markup misses a feature.
+
+Jotdown passes through a select number of X/HTML tags:
+    ```
+    <div></div>
+    <span></span>
+    <style></style>
+    <script></script>
+    ```
+
+Everything inside those tags, including other X/HTML tags is passed through.
+
+Note that, for simplicity you can't combine Jotdown and X/HTML, inside the X/HTML
+parts you can't use Jotdown syntax.
+
+Of course this feature is optional, since output can be generated for other targets than X/HTML.
+
+) CHAPTER ) Emojis
+==================
+
+Like it or not, they are a popular feature nowadays.
+
+| &;-)         :smilie: ???
+| &:-)         :smilie: ???
+| &;-(         
+
+Should GitHub style emojis be supported?
+
+) CHAPTER ) Extension system
+============================
+
+X()
+
+) CHAPTER ) Math
+================
+
+$((10+10))
+
+) CHAPTER ) Comments
+====================
+
+Multiline:
+    /* This is a multiline comment
+       that is inspired by C style syntax */
+
+Singleline:
+    // Single line comment inspired by C style syntax
+
+NOTE:
+    This feature is up for debate.
+
+) CHAPTER ) More quotes
+=======================
+
+Example:
+  "(Turn your wounds into wisdom) -- Ophrah Winfrey, At Some Point In Her Life"
+
+) CHAPTER ) Bangs
+=================
+
+This syntax is inspired by Unix shebangs like this one:
+    ```
+    #!/bin/sh
+    echo hello
+    ```
+  
+The `#!/bin/sh` in the first line is called a shebang. It tells the OS which interpreter
+is supposed to be used to run a file.
+
+In Jotdown we're using this syntax for directly interpreting/executing code, like this:
+
+Example:
+    ```
+    Hello, I want to say #!/sh echo hello#!/.
+    ```
+Result:
+    Hello, I want to say #!/sh echo hello#!/.
+
+`#!/sh` tells the Jotdown parser to use the shell to interpret what's between `#!/interpreter` and `#!/`.
+
+Of course, this can also be used across multiple lines:
+    ```
+    #!/python
+    print("Hello")
+    print("World")
+    #!/
+    ```
+Note that you don't need to give an exact path to the interpreter like needed in a Unix shebang,
+because Jotdown will use the executable found in your path.
+
+) CHAPTER ) Example syntax
+==========================
+
+Sometimes you want to present code along with example output. Jotdown provides special syntax for that.
+
+"""
+```demo python
+print("Hello")
+print("World")
+```
+"""
+
+This will create a two-column table (or similar demonstration user interface)
+with the code on the left side and the resulting output on the right side.
+
+Another neat feature is for creating an interactive playground
+(of course, support for that first must exist in the tooling and target environment):
+"""
+```play python
+print("Hello")
+print("World")
+```
+"""
+
+) CHAPTER ) Escaping
+====================
+
+Everything can be escaped by using triple quotes like this ```"""("""```.
+
+= What             Why                                                        How
+| `(`              At the beginning of a line, `(` is a special character.    `((`
+| `]`              At the beginning of a line, `]` is a special character.    `]]`
+| `~`              At the beginning of a line, `~` is a special character.    `~~`
+
+) CAPTION ) special escape character combinations
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+= Combination      Result          HTML
+| (C)              ©               &#169;
+| (TM)             ™               &#8482;
+| (R)              ®               &#174;
+| ...              …​               &#8230;
+| ->               →               &#8594;
+| =>               ⇒              &#8658;
+| <-               ←               &#8592;
+| <=               ⇐              &#8656;
+| Frodo's          Frodo’s         Frodo&#8217;s
