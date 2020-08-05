@@ -71,12 +71,12 @@ The syntax for meta information is:
 
  ) CAPTION )      Meta keys
  = Key            Description
- | ABOUT          Description of the document. If none is given, the first heading is used.
- | AUTHOR         Name of the author
+ | SUMMARY        Description of the document. If none is given, the first heading is used.
+ | AUTHORS        Names of the authors
  | CREATED        Date (and possibly time) on which the document was created
- | MODIFIED       Date (and possibly time) on which the document was last modified
+ | CHANGED        Date (and possibly time) on which the document was last modified
  | VERSION        Document version
- | ENCODE         Usually `utf8`
+ | CHARSET        Usually `utf8`
  | CONTACT        Contact information
  | LICENSE        Copyright license the document is licensed under
 
