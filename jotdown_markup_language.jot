@@ -1,5 +1,6 @@
-) Title   ) Jotdown Specification
-===============================
+=================================
+) JOTDOWN ) Jotdown Specification
+=================================
 ) AUTHORS ) Tobias Gläßer, Nobody Else
 ) CREATED ) 2020/08/04 
 ) LICENSE ) permissive FOSS license / attribution required
@@ -9,6 +10,7 @@
 
 ) CONTENT 
 
+=======================================
 ) CHAPTER ) Introduction and principles
 =======================================
 Jotdown is a lightweight markup language whose philosophy is similar to Markdown's,
@@ -43,6 +45,7 @@ This document is the Jotdown specification, which is itself written in Jotdown.
 
 Tooling does currently ([\CREATED]) not exist, anyone is welcome to implement it.
 
+======================================================
 ) CHAPTER ) Tooling
 ======================================================
 Currently tooling for Jotdown doesn't exist.
@@ -61,6 +64,7 @@ Here are some ideas on what the tooling could or should be like:
  - Targeting output to HTML5, Markdown, Asciidoc and pandoc's internal format is highly desirable.
  - The tools ideally will be licensed under a permissive FOSS license, so they can get used by anyone.
  
+================================================
 ) CHAPTER ) Meta information and key value store
 ================================================
 
@@ -69,7 +73,7 @@ The syntax for meta information is:
     ) KEY ) value
     ```
 
- ) CAPTION )      Meta keys
+ ) ? )            Meta keys
  = Key            Description
  | SUMMARY        Description of the document. If none is given, the first heading is used.
  | AUTHORS        Names of the authors
@@ -81,7 +85,7 @@ The syntax for meta information is:
  | LICENSE        Copyright license the document is licensed under
 
 By convention the Jotdown keywords are written in capital letters, however the parser is required
-to behave case insensitive in regard to this.
+to treat all keys and keywords case insensitively.
 
 Meta information can be referenced inside the document.
 That's why you'll read in this sentence, that the author of the Jotdown specification is /[\AUTHOR]/.
@@ -106,12 +110,14 @@ In the preprocessing stage the square brackets get populated with the full conte
 which leads to the finalized expression `[http://mydomain.com/blog "My Blog"]`,
 that is turned into a link to `http://mydomain.com/blog` with the link text `My Blog`.
 
+=============================
 ) CHAPTER ) Table of contents
 =============================
 
 The table of contents can be created as follows:
     ```) CONTENT```
 
+===========================================
 ) CHAPTER ) Headings, sections and chapters
 ===========================================
 
@@ -119,21 +125,42 @@ Jotdown supports different styles of headings.
 
 Book style:
     ```
-    ) TITLE        ) Heading text
-    ) PART         ) Heading text
+    ) JOTDOWN      ) Heading text
+    ) BIGPART      ) Heading text
     ) CHAPTER      ) Heading text
     ) SECTION      ) Heading text
-    ) SUB          ) Heading text
-    ) SUBSUB       ) Heading text
-    ) PAGE
+    ) SUBITEM      ) Heading text
+    ) HYPOSUB      ) Heading text
+    ) NEWPAGE
     ```
     
-    SUBSUB is the smallest kind of section. It can't be divided into smaller sections,
+    The names of different section types are kept to 7 characters in length, just like the length of
+    many important meta values like AUTHORS and SUMMARY is kept to that same length, in order to make
+    the finished document appear more well rounded and orderly.
+    
+    JOTDOWN is the root of all other section types. It's heading text becomes the title for the whole document.
+    
+    HYPOSUB is the smallest kind of section. It can't be divided into smaller sections,
     like an atom can't be divided into smaller atoms.
     
     atom := indivisable in Greek (Sorry, to all the nerds, that have known this all along)
     
-    PAGEs are special, because what they're doing is to in effect cause a page break, but nothing else.
+    NEWPAGEs are special, because what they're doing is to in effect cause a page break, but nothing else.
+    
+    Some of the book style section names have aliases. These may be used according to the author's preferences.
+    
+    = Section type names        Aliases
+    | JOTDOWN                   DOCNAME, DOCROOT, THEROOT, ROOT, DOCUMENT, DOCTITLE, BOOK, BOOKTITLE
+    | BIGPART                   THEPART, DOCPART, ONEPART, BIGPART, PART, PARTONE, PARTTWO,
+    .                           PARTTHREE, PARTFOUR, PARTSIX, PARTSEVEN, PARTEIGHT, PARTNINE, PARTTEN
+    | CHAPTER                   --
+    | SECTION                   --
+    | SUBITEM                   SUBSECTION
+    | HYPOSUB                   SUBSUBSECTION, MINISUB
+    | NEWPAGE                   PAGE
+    
+    Especially the counting aliases for BIGPART; PARTONE, PARTTWO and PARTTHREE may be useful,
+    as those aren't merely functional, they are meaningful at the same time.
   
 Simple style:
     ```
@@ -155,6 +182,7 @@ simply isn't Markdown, and has its own ideas on style and functionality trade-of
 a technical reason, which is that Jotdown aims to support the commonly used hash-tag character `#`
 at line beginnings without escaping requirements.
 
+=======================
 ) CHAPTER ) Font styles
 =======================
 
@@ -245,7 +273,7 @@ How user style macros work:
     - the result of that Jotdown interpretation gets inserted into the sentence.
     
 All styles are supposed to work on parts of words, too. Ie.:
-    ) CAPTION ) Here we expect the present in presentation to be presented with bold highlighting
+    ) ? ) Here we expect the present in presentation to be presented with bold highlighting
     ```demo jd
     **Present**ations are sometimes boring.
     ```
@@ -273,6 +301,7 @@ See: https://www.w3schools.com/colors/colors_groups.asp
 
 The color names are supported case insensitively.
 
+==========================
 ) CHAPTER ) Embedding code
 ==========================
 
@@ -295,6 +324,34 @@ When the code's language is defined, the generated output may contain highlighti
 
 This syntax was copied from Markdown, because it works well.
 
+=======================
+) CHAPTER ) Blockquotes
+=======================
+
+\ This is a blockquote.
+
+\ This is another blockquote. They work pretty much like they work in Markdown.
+
+) ? ) Blockquote title/caption
+\ Another blockquote. This one is supposed to have the title "Blockquote title/caption"
+
+Note: This chapter is far from being finalized. All of it is subject to change.
+
+===============================
+) CHAPTER ) Titles and captions
+===============================
+
+In HTML tables have a caption, but blockquotes have a title, of course there are those who say,
+that those are just different names for essentially the same need.
+
+That's why Jotdown has a unified syntax for titles and captions. Here's a demonstration on a table:
+    
+    ) ? ) Small table that demonstrates how captions and titles work in Jotdown
+    =  Column1        Column2
+    |  Row1Col1       Row1Col2
+    
+
+=================
 ) CHAPTER ) Lists
 =================
 
@@ -344,6 +401,7 @@ Here's an example *without* leading whitespace:
 - This is a bullet list
 - without whitespaces infront.
 
+===========================================
 ) CHAPTER ) Input fields and user interface
 ===========================================
 
@@ -363,6 +421,7 @@ This is an experimental idea. Mostly food for thought.
 [<_submit_>] Submit [<_reset_>] Reset
 
 
+=======================
 ) CHAPTER ) Definitions
 =======================
 
@@ -382,6 +441,7 @@ Definition :=
 
 The `:=` syntax is inspired by golang.
 
+===============================
 ) CHAPTER ) Alignment
 ===============================
 
@@ -414,6 +474,7 @@ Example:
 
 At least two spaces are needed to create an indentation block.
 
+==================
 ) CHAPTER ) Tables
 ==================
 
@@ -431,7 +492,7 @@ One line table:
     | Key          | abcdef            | It's a bad key
     
 Table with caption:
-    ) CAPTION )   Table example that shows how to use captions.
+    ) ? )   Table example that shows how to use captions.
     = Column      Second Column       Third Column
     | One         Two                 Three
     | Four        Five                Six
@@ -466,9 +527,10 @@ Table with multiple bodies:
     _ Foot    | Feet      | Foot
     
 Table with row spanning:
-    ( CAPTION ( In this example the rows with Head 1, 2 and 3 are actually the same row
+    ( ? ( In this example the rows with Head 1, 2 and 3 are actually the same row
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     = Head    | Col2      | Col3
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     | Content | More      | More
     | More    | More      | More
     | 1       | More      | More
@@ -499,6 +561,7 @@ For table type two, or TTT, `==` signifies a column, that can contain multiple r
 separated by newlines starting with a `|`.
 TTT may be easier to write in some cases, and exists purely for convenience.
 
+=================
 ) CHAPTER ) Links
 =================
 
@@ -522,6 +585,7 @@ Linktext:
     [http://google.com]        (Description text not necessary)
     ```
   
+======================
 ) CHAPTER ) References
 ======================
   
@@ -541,6 +605,7 @@ This sentence is followed by a footnote.[1](http://www.google.com[Google])
 
 Footnotes can be redefined at any time. 
 
+=================
 ) CHAPTER ) Boxes
 =================
 
@@ -577,6 +642,7 @@ Tip/Hint:
 All boxes are written with capital letters and have exactly 4 letters,
 so that they are more easily distinguished.
 
+===========================
 ) CHAPTER ) Embedding media
 ===========================
 
@@ -590,7 +656,7 @@ This text is very lazy and now look at a centered image:
                                 <[http://somecrazy.jpg 500x400 Alternative text]>
     
 This text is very lazy and now look at a centered image, with a caption:
-    ] CAPTION ] This is a test caption for an image
+    ) ? ) This is a test caption for an image
     <[http://somecrazy.jpg 500x400 Alternative text]>
 
 This text is very lazy and now look at a right-aligned image:
@@ -602,6 +668,7 @@ Embedding a YouTube video:
 Embedding a YouTube video:
 [http://www.youtube.com/... 500x400 Alternative text]
 
+=========================
 ) CHAPTER ) Date and time
 =========================
 
@@ -610,6 +677,7 @@ intuitive for an international user base, won't be easy.
 
 *TODO*
 
+==================
 ) CHAPTER ) Breaks
 ==================
 
@@ -679,6 +747,7 @@ Page break:
   XXX  
   ```
 
+===============================================
 ) CHAPTER ) Including other documents and files
 ===============================================
 
@@ -697,6 +766,7 @@ The content of this file will be interpreted as Jotdown, chapter One will be inc
 The content of this file will be interpreted as Jotdown, chapter One will be included:
     ```[/path/to/some/file text/jotdown /CHAPTER/One]```
 
+================================
 ) CHAPTER ) Passing through HTML
 ================================
 
@@ -717,6 +787,7 @@ parts you can't use Jotdown syntax.
 
 Of course this feature is optional, since output can be generated for other targets than X/HTML.
 
+==================
 ) CHAPTER ) Emojis
 ==================
 
@@ -728,16 +799,19 @@ Like it or not, they are a popular feature nowadays.
 
 Should GitHub style emojis be supported?
 
+============================
 ) CHAPTER ) Extension system
 ============================
 
 X()
 
+================
 ) CHAPTER ) Math
 ================
 
 $((10+10))
 
+====================
 ) CHAPTER ) Comments
 ====================
 
@@ -751,12 +825,14 @@ Singleline:
 NOTE:
     This feature is up for debate.
 
+=======================
 ) CHAPTER ) More quotes
 =======================
 
 Example:
   "(Turn your wounds into wisdom) -- Ophrah Winfrey, At Some Point In Her Life"
 
+=================
 ) CHAPTER ) Bangs
 =================
 
@@ -790,6 +866,7 @@ Of course, this can also be used across multiple lines:
 Note that you don't need to give an exact path to the interpreter like needed in a Unix shebang,
 because Jotdown will use the executable found in your path.
 
+==========================
 ) CHAPTER ) Example syntax
 ==========================
 
@@ -814,6 +891,7 @@ print("World")
 ```
 """
 
+====================
 ) CHAPTER ) Escaping
 ====================
 
@@ -824,7 +902,7 @@ Everything can be escaped by using triple quotes like this ```"""("""```.
 | `]`              At the beginning of a line, `]` is a special character.    `]]`
 | `~`              At the beginning of a line, `~` is a special character.    `~~`
 
-) CAPTION ) special escape character combinations
+) ? ) special escape character combinations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 = Combination      Result          HTML
 | (C)              ©               &#169;
