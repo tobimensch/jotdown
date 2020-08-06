@@ -8,7 +8,8 @@
 ) SUMMARY ) Specification for a lightweight markup language
 ) WEBPAGE ) http://github.com/tobimensch/jotdown
 ) CHARSET ) utf8
-) SOURCES ) [\HOMEDIR]/bin;[\HOMEDIR]/bin/pj_jotdown
+) SOURCES ) [\HOMEDIR]/path/to/jaydees
+) SOURCES } [\HOMEDIR]/path/to/images
 ) DOCTYPE ) Documentation
 
 ) CONTENT 
@@ -17,18 +18,18 @@
 ) CHAPTER ) #introduction ) Introduction and principles
 =======================================================
 Jotdown is a lightweight markup language whose philosophy is similar to Markdown's,
-but with a few significant differences.
+however with a few significant differences.
 
 The guiding principles are:
- - The raw format must make sense to untrained readers.
- - The raw format should look pleasing on the eye, albeit that's subjective.
- - The rules must be consistent, to make processing straightforward.
- - Allow for stylistic freedoms, such as indentation sizes, to accomodate different tastes and needs.
- - Should have all features (not syntax) of Markdown/Commonmark 1.0.
- - Should have most features (not syntax) of Asciidoc.
- - Should look into adopting the planning features from Orgmode.
- - Should contain often requested features in other markup languages, like math support.
- - Should be extendable.
+ - The raw format **must** make sense to **untrained readers**.
+ - The raw format should look **pleasing on the eye**, albeit that's subjective.
+ - The rules must be *consistent*, to make processing straightforward.
+ - Allow for **stylistic freedoms**, such as indentation sizes, to accomodate different tastes and needs.
+ - Should have all features (not syntax) of //Markdown/Commonmark// 1.0.
+ - Should have most features (not syntax) of //Asciidoc//.
+ - Should look into adopting the planning features from //Orgmode//.
+ - Should contain often requested features in other markup languages, like **math support**.
+ - Should be **extendable**.
  
 Scope:
     Because Jotdown aims to be a replacement for many use cases of Markdown and Asciidoc among others,
@@ -46,14 +47,12 @@ Scope:
 
 This document is the Jotdown specification, which is itself written in Jotdown.
 
-Tooling does currently ([\CREATED]) not exist, anyone is welcome to implement it.
-
 ======================================================
 ) CHAPTER ) Tooling
 ======================================================
-Currently tooling for Jotdown doesn't exist.
+Tooling does currently ([\CREATED]) not exist.
 
-Anyone is welcome to develop their own Jotdown tooling using this specification.
+Anyone is welcome to develop their own Jotdown tooling based on specification.
 
 If you do so, please credit me for creating this specification.
 
@@ -66,69 +65,95 @@ Here are some ideas on what the tooling could or should be like:
    with consistent syntax and high quality formatting.
  - Targeting output to HTML5, Markdown, Asciidoc and pandoc's internal format is highly desirable.
  - The tools ideally will be licensed under a permissive FOSS license, so they can get used by anyone.
+
+========================================================
+) CHAPTER ) File extension and jotdown alternative names
+========================================================
+)) File extensions:
+    The recommended file extension for Jotdown files is `jot`.
+
+)) Alternative names:
+    The official name of the Jotdown format is Jotdown,
+    but in colloquial contexts shorter names may be more convenient,
+    this is why the terms `jot-file` and `Jaydee-file` are recommened as Jotdown synonyms.
  
 =================================================================
 ) CHAPTER ) #keys-and-meta ) Meta information and key value store
 =================================================================
 
-The syntax for meta information is:
+)) #value ) Syntax for setting a value in the key-value store
+
     ```
     ) KEY ) value
     ```
 
- ) ? )            Meta keys
- = Key            Description                                                   Alternative names
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- | SUMMARY        Description of the document.                                  DESCRIPTION
- .                If none is given, the first heading is used.
- | AUTHORS        Names of the authors, comma or semicolon separated            AUTHOR
- | WEBPAGE        Webpage                                                       WEBSITE, HOMEPAGE
- | CREATED        Date (and possibly time) of creation.
- | CHANGED        Date (and possibly time) of last modification.
- | VERSION        Document version
- | CHARSET        Usually `utf8`
- | CONTACT        Contact information
- | LICENSE        Copyright license the document is licensed under
- | SOURCES        Semicolon separated list of source or resource directories 
+)) #array ) Syntax for adding a value to a multivalue-key (array)
 
-By convention the Jotdown keywords are written in VVcapital lettersVV, however the parser is required
-to treat all keys and keywords case insensitively.
-
-Meta information can be referenced inside the document.
-That's why you'll read in this sentence, that the author of the Jotdown specification is /[\AUTHOR]/.
-
-There's no restriction on custom usage, this feature is literally a key-value store.
-
-For example you could do this:
     ```
-    ) myBlog ) http://mydomain.com/blog
+    ) KEY } value
+    ```
     
-    You're welcome to visit [\myBlog "My Blog"].
-    ```
-
-Or this:
-    ```
-    ) myBlog ) http://mydomain.com/blog "My Blog"
+    Multivalue-keys/arrays are getting stored in a semicolon separated string.
     
-    You're welcome to visit [\myBlog].
-    ```
+    The first value of a multivalue-key (array) can be set with the [#value] syntax.
+    
+)) #meta-keys ) Document meta keys
 
-In the preprocessing stage the square brackets get populated with the full content of the key value store,
-which leads to the finalized expression `[http://mydomain.com/blog "My Blog"]`,
-that is turned into a link to `http://mydomain.com/blog` with the link text `My Blog`.
+    ) ? )            Meta keys
+    = Key            Description                                                   Alternative names
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | SUMMARY        Description of the document.                                  DESCRIPTION
+    .                If none is given, the first heading is used.
+    | AUTHORS        Names of the authors, comma or semicolon separated            AUTHOR
+    | WEBPAGE        Webpage                                                       WEBSITE, HOMEPAGE
+    | CREATED        Date (and possibly time) of creation.
+    | CHANGED        Date (and possibly time) of last modification.
+    | VERSION        Document version
+    | CHARSET        Usually `utf8`
+    | CONTACT        Contact information
+    | LICENSE        Copyright license the document is licensed under
+    | SOURCES        Semicolon separated list of source or resource directories 
+    
+    By convention the Jotdown keywords are written in VVcapital lettersVV, however the parser is required
+    to treat all keys and keywords case insensitively.
+    
+    Meta information can be referenced inside the document.
+    That's why you'll read in this sentence, that the author of the Jotdown specification is /[\AUTHOR]/.
+    
+)) #custom-keys ) Custom usage of key-value store
+    
+    There's no restriction on custom usage, this feature is literally a key-value store.
+    
+    For example you could do this:
+       ```
+       ) myBlog ) http://mydomain.com/blog
+    
+       You're welcome to visit [\myBlog "My Blog"].
+       ```
+
+    Or this:
+       ```
+       ) myBlog ) http://mydomain.com/blog "My Blog"
+    
+       You're welcome to visit [\myBlog].
+       ```
+
+    In the preprocessing stage the square brackets get populated with the full content of the key value store,
+    which leads to the finalized expression `[http://mydomain.com/blog "My Blog"]`,
+    that is turned into a link to `http://mydomain.com/blog` with the link text `My Blog`.
 
 )) Environment variables
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-These are key-value pairs unique to a user's system, that are passed through.
-
-As Jotdown must work cross-platform, these values can differ from the name they have in the user's OS.
-
-= Key                   Description
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-| HOMEDIR               Path to the user's home directory.
-| WORKDIR               Path where Jotdown instance is run from
-
+    These are key-value pairs unique to a user's system, that are passed through.
+    
+    As Jotdown must work cross-platform, these values can differ from the name they have in the user's OS.
+    
+    = Key                   Description
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | HOMEDIR               Path to the user's home directory.
+    | WORKDIR               Path where Jotdown instance is run from
+    
 ====================================
 ) CHAPTER ) #toc ) Table of contents
 ====================================
@@ -157,6 +182,8 @@ Book style:
     ) ? ) Dynamic
     ```
     )) Heading text
+    )} Heading text
+    )] Heading text
     ```
     
     The basic syntax is the same for all types of sections.
@@ -203,7 +230,10 @@ Book style:
     So if it's used in a CHAPTER, it starts a new SECTION, if it's used in a SECTION,
     it starts a new SUBITEM, and so on and so forth.
     The clear advantage is that you have to type less, and in some instances it looks better in the raw format.
-  
+    
+    There are two more kinds of dynamic subsection syntax, one for sub-sub-sections with syntax `({ Heading text`,
+    and one for sub-sub-sub-sections with syntax `([ Heading text`. 
+
 Simple style:
     ```
     ] Heading text
@@ -231,35 +261,35 @@ at line beginnings without escaping requirements.
 )) Normal paragraph
 ~~~~~~~~~~~~~~~~~~~
 
-  ```
-  One paragraph.
-  
-  Another paragraph.
-  ```
+    ```
+    One paragraph.
+    
+    Another paragraph.
+    ```
 
 )) Literal paragraph
 ~~~~~~~~~~~~~~~~~~~~
 
-  ```
-  Normal paragraph.
+    ```
+    Normal paragraph.
 
-  . This is a literal paragraph,
-  . this syntax isn't finalized.
-  . The rationale here is that,
-  . it should be clearly visible at all times,
-  . that a paragraph is literal.
-  . In Asciidoctor and others they simply use one space indentation for literal paragraphs,
-  . but that's not making for a strong enough distinction between it and normal paragraphs.
+    . This is a literal paragraph,
+    . this syntax isn't finalized.
+    . The rationale here is that,
+    . it should be clearly visible at all times,
+    . that a paragraph is literal.
+    . In Asciidoctor and others they simply use one space indentation for literal paragraphs,
+    . but that's not making for a strong enough distinction between it and normal paragraphs.
 
-  Another normal paragraph.
-  ```
+    Another normal paragraph.
+    ```
 
 )) Lead paragraph
 ~~~~~~~~~~~~~~~~~
 
-  ```
-  ^ This text will be styled as a lead paragraph.
-  ```
+    ```
+    ^ This text will be styled as a lead paragraph.
+    ```
 
 =======================
 ) CHAPTER ) Font styles
@@ -982,14 +1012,14 @@ X()
 
 Multiline comment:
     ```
-    /__/ This is a multiline comment
-         with exactly two lines /__/
+    /\\/ This is a multiline comment
+         with exactly two lines /\\/
     ```
 
 Multiline comment with ID:
     ```
-    /_#numberone_/ This is a multiline comment
-       with exactly two lines /__/
+    /\#numberone\/ This is a multiline comment
+       with exactly two lines /\\/
     ```
     
     The contents of comments with an ID, can be referenced.
