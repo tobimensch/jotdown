@@ -8,6 +8,8 @@
 ) SUMMARY ) Specification for a lightweight markup language
 ) WEBPAGE ) http://github.com/tobimensch/jotdown
 ) CHARSET ) utf8
+) SOURCES ) [\HOMEDIR]/bin;[\HOMEDIR]/bin/pj_jotdown
+) DOCTYPE ) Documentation
 
 ) CONTENT 
 
@@ -18,13 +20,13 @@ Jotdown is a lightweight markup language whose philosophy is similar to Markdown
 but with a few significant differences.
 
 The guiding principles are:
- - The raw format must make sense to untrained viewers.
+ - The raw format must make sense to untrained readers.
  - The raw format should look pleasing on the eye, albeit that's subjective.
  - The rules must be consistent, to make processing straightforward.
  - Allow for stylistic freedoms, such as indentation sizes, to accomodate different tastes and needs.
  - Should have all features (not syntax) of Markdown/Commonmark 1.0.
  - Should have most features (not syntax) of Asciidoc.
- - Should look into supporting planning features from Orgmode.
+ - Should look into adopting the planning features from Orgmode.
  - Should contain often requested features in other markup languages, like math support.
  - Should be extendable.
  
@@ -75,17 +77,19 @@ The syntax for meta information is:
     ```
 
  ) ? )            Meta keys
- = Key            Description                                            Alternative names
- | SUMMARY        Description of the document.                           DESCRIPTION
+ = Key            Description                                                   Alternative names
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ | SUMMARY        Description of the document.                                  DESCRIPTION
  .                If none is given, the first heading is used.
- | AUTHORS        Names of the authors                                   AUTHOR
- | WEBPAGE        Webpage                                                WEBSITE, HOMEPAGE
+ | AUTHORS        Names of the authors, comma or semicolon separated            AUTHOR
+ | WEBPAGE        Webpage                                                       WEBSITE, HOMEPAGE
  | CREATED        Date (and possibly time) of creation.
  | CHANGED        Date (and possibly time) of last modification.
  | VERSION        Document version
  | CHARSET        Usually `utf8`
  | CONTACT        Contact information
  | LICENSE        Copyright license the document is licensed under
+ | SOURCES        Semicolon separated list of source or resource directories 
 
 By convention the Jotdown keywords are written in VVcapital lettersVV, however the parser is required
 to treat all keys and keywords case insensitively.
@@ -113,6 +117,18 @@ In the preprocessing stage the square brackets get populated with the full conte
 which leads to the finalized expression `[http://mydomain.com/blog "My Blog"]`,
 that is turned into a link to `http://mydomain.com/blog` with the link text `My Blog`.
 
+)) Environment variables
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+These are key-value pairs unique to a user's system, that are passed through.
+
+As Jotdown must work cross-platform, these values can differ from the name they have in the user's OS.
+
+= Key                   Description
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+| HOMEDIR               Path to the user's home directory.
+| WORKDIR               Path where Jotdown instance is run from
+
 ====================================
 ) CHAPTER ) #toc ) Table of contents
 ====================================
@@ -134,7 +150,7 @@ Book style:
     ) CHAPTER      ) Heading text
     ) SECTION      ) Heading text
     ) SUBITEM      ) Heading text
-    ) HYPOSUB      ) Heading text
+    ) MINUTIA      ) Heading text
     ) NEWPAGE
     ```
     
@@ -161,10 +177,8 @@ Book style:
     
     JOTDOWN is the root of all other section types. It's heading text becomes the title for the whole document.
     
-    HYPOSUB is the smallest kind of section. It can't be divided into smaller sections,
+    MINUTIA is the smallest kind of section. It can't be divided into smaller sections,
     like an atom can't be divided into smaller atoms.
-    
-    atom := indivisable in Greek (Sorry, to all the nerds, that have known this all along)
     
     NEWPAGEs are special, because what they're doing is to in effect cause a page break, but nothing else.
     
@@ -178,7 +192,7 @@ Book style:
     | CHAPTER                   --
     | SECTION                   --
     | SUBITEM                   SUBSECTION
-    | HYPOSUB                   SUBSUBSECTION, MINISUB
+    | MINUTIA                   SUBSUBSECTION, MINISUB, HYPOSUB, DETAILS
     | NEWPAGE                   PAGE
     
     Especially the counting aliases for BIGPART; like PARTONE, PARTTWO and PARTTHREE may be useful,
@@ -214,8 +228,8 @@ at line beginnings without escaping requirements.
 ) CHAPTER ) Paragraphs
 ======================
 
-)) Normal
-~~~~~~~~~
+)) Normal paragraph
+~~~~~~~~~~~~~~~~~~~
 
   ```
   One paragraph.
@@ -223,15 +237,15 @@ at line beginnings without escaping requirements.
   Another paragraph.
   ```
 
-)) Literal
-~~~~~~~~~~
+)) Literal paragraph
+~~~~~~~~~~~~~~~~~~~~
 
   ```
   Normal paragraph.
 
   . This is a literal paragraph,
   . this syntax isn't finalized.
-  . The thinking here is that,
+  . The rationale here is that,
   . it should be clearly visible at all times,
   . that a paragraph is literal.
   . In Asciidoctor and others they simply use one space indentation for literal paragraphs,
@@ -360,7 +374,7 @@ NOTE:
     The syntax that is supporting multiple words according to this specification is generally easier to parse.
      
 ) SECTION ) #colorcodes ) Supported color codes
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  
 See: https://www.w3schools.com/colors/colors_groups.asp
 
@@ -420,8 +434,8 @@ That's why Jotdown has a unified syntax for titles and captions. Here's a demons
 ) CHAPTER ) Lists
 =================
 
-| `-`, • (Unicode bullet character) | can be used for bullet lists
-| `#.`, and numerals                | can be used for lists with numbers
+| `-`, • (Unicode bullet character) | for bullet lists
+| `#.`, and numerals                | for numbered lists
 
  - This is a short
  - bullet list that
@@ -510,26 +524,82 @@ The `:=` syntax is inspired by golang.
 ) CHAPTER ) Alignment
 ===============================
 
-) SECTION ) #orientation ) Left, Right, Center
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+) SECTION ) Spacers
+~~~~~~~~~~~~~~~~~~~
+
+You can insert spacers with the `<.>` syntax at any place you like.
+They will change the alignment of text and objects surrounding them.
+
+By default spacers take up as much space as is available, without
+forcing the surrounding content to get crammed or wrapped.
+
+In addition you can set a specific spacing width with `<.10%.>`, `<.10px.>`,
+`<.10sp.>`. The percentage refers to the available width. Px stands for pixels, sp stands for space character widths.
+
+If no specific amount of spacing is given, the spacing should work by changing
+the alignment properties of surrounding text and objects.
+
+Spacers can be made to work over multiple lines, by using this identation based syntax:
+    ) ? ) Centered
+    ```
+        <.>I<.>:
+            text
+            with
+            multiple
+            lines
+    ```
+    ) ? ) Right aligned
+    ```
+        <.>I:
+            text
+            with
+            multiple
+            lines
+    ```
+    
+    `I` is a stand-in for the indented content, that is following `:`.
+
+)) #orientation ) Left, Right, Center
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This is just normal text, which is left aligned.
 
-                >> This text is right aligned.
+                <.> This text is right aligned.
  
 By convention right aligned text is indented with 16 spaces.
 
-    <> This text is centered.
+    <.>I<.>:
+         This text is centered.
+         And has multiple lines.
+         As you can clearly see.
 
-    < This text is centered. >
+    <.> This text is centered. <.>
+    
+    I'm on the left <.> I'm on the right
+    
+    I'm on the left <.> I'm in the center <.> I'm on the right
+    
+    I<.>:
+         This text is left aligned.
+         And has multiple lines.
+         As you can clearly see.
+         
+    <.>I:
+         This text is right aligned.
+         And has multiple lines.
+         As you can clearly see.
+
+    <.20sp.>I:
+         This text is indented by 20 chars.
+         And has multiple lines.
+         As you can clearly see.
 
 By convention centered text is intended with 4 spaces.
 
 In both cases these are merely conventions and writing down left aligned or
 centered text without those preceding spaces works fine, too.
 
-<< This is an explicit left alignment. Not necessary in almost all cases,
-as left alignment is the default alignment.
+This is an explicit left alignment. Which is the default anyway. <.>
 
 ) SECTION ) Indentation blocks
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -719,11 +789,11 @@ This text is very lazy and now look at an image:
 [http://somecrazy.jpg 500x400 Alternative text]
 
 This text is very lazy and now look at a centered image:
-                                <[http://somecrazy.jpg 500x400 Alternative text]>
+                                <.>[http://somecrazy.jpg 500x400 Alternative text]<.>
     
 This text is very lazy and now look at a centered image, with a caption:
     ) ? ) This is a test caption for an image
-    <[http://somecrazy.jpg 500x400 Alternative text]>
+    <.>[http://somecrazy.jpg 500x400 Alternative text]<.>
 
 This text is very lazy and now look at a right-aligned image:
                 >>[http://somecrazy.jpg 500x400 Alternative text]
@@ -742,6 +812,8 @@ The issue is that there are many local differences, so to make this
 intuitive for an international user base, won't be easy.
 
 *TODO*
+
+TODO: Take a look at orgmode's approach to this.
 
 ==================
 ) CHAPTER ) Breaks
@@ -875,19 +947,77 @@ X()
 ) CHAPTER ) Math
 ================
 
-$((10+10))
+)) Calculate :>
+~~~~~~~~~~~~~~~
+    You can calculate in Jotdown, for example to add 10 to 10, do:
+        ```$((10+10))```
+    In the rendered output it will look like this:
+        ```10```
+    You can save calculations to the key-value store, too:
+        ```) TWENTY ) $((10+10))```
+    And use it by referencing:
+        ```[\TWENTY]```
 
-====================
-) CHAPTER ) Comments
-====================
+)) Notate :>
+~~~~~~~~~~~~
+    TeX math.K:
+        ```$$(k_{n+1} = n^2 + k_n^2 - k_{n-1})```
+    The `$$()` notation works over multiple lines too:
+        ```$$(
+               \begin{equation}
+               \frac{
+                   \begin{array}[b]{r}
+                     \left( x_1 x_2 \right)\\
+                     \times \left( x'_1 x'_2 \right)
+                   \end{array}
+                  }{
+                    \left( y_1y_2y_3y_4 \right)
+                  }
+               \end{equation}
+             )```
 
-Multiline:
-    /* This is a multiline comment
-       that is inspired by C style syntax */
+==============================================
+) CHAPTER ) Comments, and comment based stores
+==============================================
 
-Singleline:
-    // Single line comment inspired by C style syntax
+Multiline comment:
+    ```
+    /__/ This is a multiline comment
+         with exactly two lines /__/
+    ```
 
+Multiline comment with ID:
+    ```
+    /_#numberone_/ This is a multiline comment
+       with exactly two lines /__/
+    ```
+    
+    The contents of comments with an ID, can be referenced.
+    
+    Example:
+        ) ? ) [\numberone]
+        | One  | Row  | Table | With | Long  | Caption
+        [ [\numberone]
+
+Singleline comment:
+    ```
+    //// Single line comment with exactly one line
+    ```
+    
+Singleline comment with ID:
+    ```
+    //#numberone// Single line comment inspired by C style syntax
+    ```
+
+Comments can be used anywhere, for example this works as a comment:
+    ```
+    Some normal paragraph with text /__/ Oh I want to change that
+    at some point /__/that is not very long.
+    ```
+    The multiline comment is removed from the final output, which becomes:
+    ```
+    Some normal paragraph with text that is not very long.
+    ```
 NOTE:
     This feature is up for debate.
 
