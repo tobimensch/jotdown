@@ -6,13 +6,14 @@
 ) LICENSE ) permissive FOSS license / attribution required
 ) VERSION ) 0.1
 ) SUMMARY ) Specification for a lightweight markup language
+) WEBPAGE ) http://github.com/tobimensch/jotdown
 ) CHARSET ) utf8
 
 ) CONTENT 
 
-=======================================
-) CHAPTER ) Introduction and principles
-=======================================
+=======================================================
+) CHAPTER ) #introduction ) Introduction and principles
+=======================================================
 Jotdown is a lightweight markup language whose philosophy is similar to Markdown's,
 but with a few significant differences.
 
@@ -64,9 +65,9 @@ Here are some ideas on what the tooling could or should be like:
  - Targeting output to HTML5, Markdown, Asciidoc and pandoc's internal format is highly desirable.
  - The tools ideally will be licensed under a permissive FOSS license, so they can get used by anyone.
  
-================================================
-) CHAPTER ) Meta information and key value store
-================================================
+=================================================================
+) CHAPTER ) #keys-and-meta ) Meta information and key value store
+=================================================================
 
 The syntax for meta information is:
     ```
@@ -74,17 +75,19 @@ The syntax for meta information is:
     ```
 
  ) ? )            Meta keys
- = Key            Description
- | SUMMARY        Description of the document. If none is given, the first heading is used.
- | AUTHORS        Names of the authors
- | CREATED        Date (and possibly time) on which the document was created
- | CHANGED        Date (and possibly time) on which the document was last modified
+ = Key            Description                                            Alternative names
+ | SUMMARY        Description of the document.                           DESCRIPTION
+ .                If none is given, the first heading is used.
+ | AUTHORS        Names of the authors                                   AUTHOR
+ | WEBPAGE        Webpage                                                WEBSITE, HOMEPAGE
+ | CREATED        Date (and possibly time) of creation.
+ | CHANGED        Date (and possibly time) of last modification.
  | VERSION        Document version
  | CHARSET        Usually `utf8`
  | CONTACT        Contact information
  | LICENSE        Copyright license the document is licensed under
 
-By convention the Jotdown keywords are written in capital letters, however the parser is required
+By convention the Jotdown keywords are written in VVcapital lettersVV, however the parser is required
 to treat all keys and keywords case insensitively.
 
 Meta information can be referenced inside the document.
@@ -110,20 +113,21 @@ In the preprocessing stage the square brackets get populated with the full conte
 which leads to the finalized expression `[http://mydomain.com/blog "My Blog"]`,
 that is turned into a link to `http://mydomain.com/blog` with the link text `My Blog`.
 
-=============================
-) CHAPTER ) Table of contents
-=============================
+====================================
+) CHAPTER ) #toc ) Table of contents
+====================================
 
-The table of contents can be created as follows:
+The table of contents can be inserted as follows:
     ```) CONTENT```
 
-===========================================
-) CHAPTER ) Headings, sections and chapters
-===========================================
+===========================================================
+) CHAPTER ) #partitioning ) Headings, sections and chapters
+===========================================================
 
 Jotdown supports different styles of headings.
 
 Book style:
+    ) ? ) Static
     ```
     ) JOTDOWN      ) Heading text
     ) BIGPART      ) Heading text
@@ -133,6 +137,23 @@ Book style:
     ) HYPOSUB      ) Heading text
     ) NEWPAGE
     ```
+    
+    ) ? ) Dynamic
+    ```
+    )) Heading text
+    ```
+    
+    The basic syntax is the same for all types of sections.
+    ```
+    ) SECTIONTYPE ) Heading text
+    ```
+    By default a section ID is created from the heading text, by using the first word, if that word
+    happens to be a unique ID up to this line in the document. If not, words get appended,
+    until the ID is unique. There's a syntax for explicitly defining an ID:
+    ```
+    ) SECTIONTYPE ) #myid ) Heading text
+    ```
+    The `)` after `#myid` is optional, but it looks better in the raw document if it's there.
     
     The names of different section types are kept to 7 characters in length, just like the length of
     many important meta values like AUTHORS and SUMMARY is kept to that same length, in order to make
@@ -152,15 +173,22 @@ Book style:
     = Section type names        Aliases
     | JOTDOWN                   DOCNAME, DOCROOT, THEROOT, ROOT, DOCUMENT, DOCTITLE, BOOK, BOOKTITLE
     | BIGPART                   THEPART, DOCPART, ONEPART, BIGPART, PART, PARTONE, PARTTWO,
-    .                           PARTTHREE, PARTFOUR, PARTSIX, PARTSEVEN, PARTEIGHT, PARTNINE, PARTTEN
+    .                           PARTTHREE, PARTFOUR, PARTSIX, PARTSEVEN, PARTEIGHT, PARTNINE, PARTTEN,
+    .                           1STPART, 2NDPART, 3RDPART, 4THPART, 5THPART, 6THPART, 7THPART, 8THPART, 9THPART
     | CHAPTER                   --
     | SECTION                   --
     | SUBITEM                   SUBSECTION
     | HYPOSUB                   SUBSUBSECTION, MINISUB
     | NEWPAGE                   PAGE
     
-    Especially the counting aliases for BIGPART; PARTONE, PARTTWO and PARTTHREE may be useful,
+    Especially the counting aliases for BIGPART; like PARTONE, PARTTWO and PARTTHREE may be useful,
     as those aren't merely functional, they are meaningful at the same time.
+    
+    Finally there's the dynamic type of book style subsection with the `)) Heading text` syntax.
+    It always generates a subsection of whatever type of section it currently is used in.
+    So if it's used in a CHAPTER, it starts a new SECTION, if it's used in a SECTION,
+    it starts a new SUBITEM, and so on and so forth.
+    The clear advantage is that you have to type less, and in some instances it looks better in the raw format.
   
 Simple style:
     ```
@@ -181,6 +209,43 @@ You may wonder why the simple style doesn't just follow Markdown's example. The 
 simply isn't Markdown, and has its own ideas on style and functionality trade-offs. Additionally there's
 a technical reason, which is that Jotdown aims to support the commonly used hash-tag character `#`
 at line beginnings without escaping requirements.
+
+======================
+) CHAPTER ) Paragraphs
+======================
+
+)) Normal
+~~~~~~~~~
+
+  ```
+  One paragraph.
+  
+  Another paragraph.
+  ```
+
+)) Literal
+~~~~~~~~~~
+
+  ```
+  Normal paragraph.
+
+  . This is a literal paragraph,
+  . this syntax isn't finalized.
+  . The thinking here is that,
+  . it should be clearly visible at all times,
+  . that a paragraph is literal.
+  . In Asciidoctor and others they simply use one space indentation for literal paragraphs,
+  . but that's not making for a strong enough distinction between it and normal paragraphs.
+
+  Another normal paragraph.
+  ```
+
+)) Lead paragraph
+~~~~~~~~~~~~~~~~~
+
+  ```
+  ^ This text will be styled as a lead paragraph.
+  ```
 
 =======================
 ) CHAPTER ) Font styles
@@ -294,16 +359,16 @@ NOTE:
     cause some conflicting syntax possibilities and difficulty with parsing nested constructions.
     The syntax that is supporting multiple words according to this specification is generally easier to parse.
      
-) SECTION ) Supported color codes
+) SECTION ) #colorcodes ) Supported color codes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  
 See: https://www.w3schools.com/colors/colors_groups.asp
 
 The color names are supported case insensitively.
 
-==========================
-) CHAPTER ) Embedding code
-==========================
+==================================
+) CHAPTER ) #code ) Embedding code
+==================================
 
 Default:
     ```
@@ -445,8 +510,8 @@ The `:=` syntax is inspired by golang.
 ) CHAPTER ) Alignment
 ===============================
 
-) SECTION ) Left, Right, Center
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+) SECTION ) #orientation ) Left, Right, Center
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This is just normal text, which is left aligned.
 
@@ -581,7 +646,7 @@ Linktext:
     www.google.com[Google]     (Or on the right)
     [Google](www.google.com)   (Parenthesis are optional)
     (www.google.com)[Google]   ...
-    [www.google.com Google]    (Links can inside square brackets as well)
+    [www.google.com Google]    (Links can be inside square brackets as well)
     [http://google.com]        (Description text not necessary)
     ```
   
@@ -592,6 +657,7 @@ Linktext:
 [\CHAPTER\References References to this chapter.] 
 [\CHAPTER\Links References to Links chapter.] 
 
+=====================
 ) CHAPTER ) Footnotes
 =====================
 
@@ -793,9 +859,9 @@ Of course this feature is optional, since output can be generated for other targ
 
 Like it or not, they are a popular feature nowadays.
 
-| &;-)         :smilie: ???
-| &:-)         :smilie: ???
-| &;-(         
+| `&;-)`         :smilie: ???
+| `&:-)`         :smilie: ???
+| `&;-(`         
 
 Should GitHub style emojis be supported?
 
