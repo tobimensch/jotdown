@@ -12,6 +12,17 @@
 ) SOURCES ) [\HOMEDIR]/path/to/jaydees
 ) SOURCES } [\HOMEDIR]/path/to/images
 ) DOCTYPE ) Documentation
+) CSSFILE ) [\HOMEDIR]/path/to/file.css
+) CSSTEXT [text
+    .h1{
+        color: green;
+    }    
+    end]
+) OUTPATH ) [\WORKDIR]/doc
+) OUTFILE } [\BASENAME].adoc   //// Generate Asciidoc outfile in [\WORKDIR]/doc
+) OUTFILE } [\BASENAME].html   //// Generate HTML outfile in [\WORKDIR]/doc
+) OUTFILE } [\BASENAME].pdf    //// Generate PDF outfile in [\WORKDIR]/doc
+) OUTFILE } [\BASENAME].md     //// Generate Markdown outfile in [\WORKDIR]/doc
 
 ) CONTENT 
 
@@ -51,37 +62,37 @@ This document is the Jotdown specification, which is itself written in Jotdown.
 ======================================================
 ) CHAPTER ) Frequently asked questions
 ======================================================
-??? How is Jotdown different from Markdown/Commonmark?
+)?) How is Jotdown different from Markdown/Commonmark?
     - Jotdown supports many features by default, for which you need extensions in Markdown/Commonmark:
-      ie. tables, faqs, table of contents, embedding media, comments, boxes, demoing code
+      ie. tables, faqs, table of contents, embedding many kinds of media, comments, boxes, demoing code
     - Jotdown has features for the creation of books and documentation
-??? How is Jotdown different from Asciidoc?
-    - Jotdown's syntax is geared towards being readable without much or no preknowledge of the syntax,
+)?) How is Jotdown different from Asciidoc?
+    - Jotdown's syntax is geared towards being readable without preknowledge of the syntax,
       this is a subjective measure, however I think that when reading Asciidoc documents 
       the experience is less intuitive for uninitiated readers.
     - Jotdown aims to absorb all or most Asciidoc features. Asciidoc is richer in features than Markdown.
-??? How is Jotdown different from Orgmode?
+)?) How is Jotdown different from Orgmode?
     - Orgmode has different syntax.
     - Currently Orgmode has many advanced planning/scheduling features that are lacking in Jotdown.
       - Jotdown aims to support some of those features, or even all of them,
         but as of now this hasn't happened yet.
-??? Where does the name Jotdown come from?
+)?) Where does the name Jotdown come from?
     - %%To jot something down%% is an expression in English for quickly writing something down.
     - It is also in line with Markdown's naming scheme.
-??? What kind of problems is Jotdown trying to solve?
+)?) What kind of problems is Jotdown trying to solve?
     - Similar syntax should consistently be used for similar behavior.
       ie. `[string]` in jotdown is always used for links or references to `string`,
       while `[[string]]` is always for embedding the stuff linked to or referenced to by `string`.
     - Jotdown intends to be a lightweight markup language for widely different domains:
       ie. creating websites, documentation, (e)books, planning/TODOs 
-??? How is this specification developed?
+)?) What is the development process of this specification like?
     - Currently the specification is in an alpha stage and some aspects of it are subject to change.
-    - Jotdown is designed with many domains of usage in mind, therefore it is to be expected,
-      that with continued development, new features will be added to this specification.
+    - Jotdown is designed with many domains of use in mind, therefore it is to be expected,
+      that with continued development, new features will be added to the specification.
     - Feature requests are welcome. Of course, there's a limit to what can end up in the official specification,
       and some features should better be provided through extensions.
-??? Can Jotdown be supported in proprietary products?
-    - Yes, just please call the Jotdown support `Jotdown` or `Jotdown markup` in your products.
+)?) Can Jotdown be supported in proprietary products?
+    - Yes, just please list the Jotdown support as `Jotdown` or `Jotdown markup` in your products.
 
 ======================================================
 ) CHAPTER ) Tooling
@@ -90,7 +101,7 @@ Tooling is currently ([\CREATED]) non-existend.
 
 Anyone is welcome to develop their own Jotdown tooling based on this specification.
 
-If you do so, please credit me with creating this specification.
+If you do so, please credit [\AUTHORS] with creating this specification and link to [\WEBSITE].
 
 Here are some ideas on what the tooling could or should be like:
  - The parser shouldn't fail due to ill-formated documents. It should instead pass through ill formated segments as is,
@@ -111,7 +122,7 @@ Here are some ideas on what the tooling could or should be like:
 )) Alternative names:
     The official name of the Jotdown format is Jotdown,
     but in colloquial contexts shorter names may be more convenient,
-    this is why the terms `jot-file` and `Jaydee-file` are recommened as Jotdown synonyms.
+    this is why the terms `jot-file` and `Jaydee-file` are recommened as `Jotdown file` synonyms.
  
 =================================================================
 ) CHAPTER ) #keys-and-meta ) Meta information and key value store
@@ -135,7 +146,7 @@ Here are some ideas on what the tooling could or should be like:
     
 )) #meta-keys ) Document meta keys
 
-    ) ? )            Meta keys
+    ) ^ )            Meta keys
     = Key            Description                                                   Alternative names
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     | SUMMARY        Description of the document.                                  DESCRIPTION
@@ -154,7 +165,7 @@ Here are some ideas on what the tooling could or should be like:
     to treat all keys and keywords case insensitively.
     
     Meta information can be referenced inside the document.
-    That's why you'll read in this sentence, that the author of the Jotdown specification is /[\AUTHOR]/.
+    That's why you'll read in this sentence, that the author of the Jotdown specification is %[\AUTHORS]%.
     
 )) #custom-keys ) Custom usage of key-value store
     
@@ -185,10 +196,16 @@ Here are some ideas on what the tooling could or should be like:
     
     As Jotdown must work cross-platform, these key names can differ from the name they have in the user's OS.
     
-    = Key                   Description
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    | HOMEDIR               Path to the user's home directory.
-    | WORKDIR               Path where Jotdown instance is run from
+    = Key          Aliases           Description   
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    | HOMEDIR                        Path to the user's home directory.
+    | WORKDIR                        Path where Jotdown instance is run from
+    | JOTNAME      BASENAME          Basename of the Jotdown file on disk.
+    .                                ie. for /path/to/README.jot, the BASENAME is README
+    
+    NOTE:
+        Environment variables are constants in the Jotdown context,
+        and can't be changed during the execution of Jotdown processors.
     
 ====================================
 ) CHAPTER ) #toc ) Table of contents
@@ -204,7 +221,7 @@ The table of contents can be inserted as follows:
 Jotdown supports different styles of headings.
 
 Book style:
-    ) ? ) Static
+    ) ^ ) Static
     ```
     ) JOTDOWN      ) Heading text
     ) BIGPART      ) Heading text
@@ -215,7 +232,7 @@ Book style:
     ) NEWPAGE
     ```
     
-    ) ? ) Dynamic
+    ) ^ ) Dynamic
     ```
     )) Heading text
     )} Heading text
@@ -240,8 +257,7 @@ Book style:
     
     JOTDOWN is the root of all other section types. It's heading text becomes the title for the whole document.
     
-    MINUTIA is the smallest kind of section. It can't be divided into smaller sections,
-    like an atom can't be divided into smaller atoms.
+    MINUTIA is the smallest kind of section and can't have any subsections itself.
     
     NEWPAGEs are special, because what they're doing is to in effect cause a page break, but nothing else.
     
@@ -262,12 +278,13 @@ Book style:
     as those aren't merely functional, they increase the readability of the document, as well. 
     
     Finally there're the dynamic book style subsections with the `)) Heading text` syntax.
-    They always generate a subsection of whatever type of static section they are used in.
-    So if it's used in a CHAPTER, it starts a new SECTION, if it's used in a SECTION,
-    it starts a new SUBITEM, and so on and so forth.
-    The advantage is that you have to type less, and in some instances it looks slicker, too.
+    They always generate a subsection of whatever type of *static section* they are used in.
+    So if they're used in a CHAPTER, they start a new SECTION, if they're used in a SECTION,
+    they start a new SUBITEM, and so forth.
+    The advantage is less typing, and in some instances it looks slicker, too.
     
-    There are two more kinds of dynamic subsection syntax, one for sub-sub-sections with syntax `({ Heading text`,
+    There are two more kinds of dynamic subsection syntax,
+    the one for sub-sub-sections with syntax `({ Heading text`,
     and one for sub-sub-sub-sections with syntax `([ Heading text`. 
 
 Simple style:
@@ -428,7 +445,7 @@ How user style macros work:
     - the result of that Jotdown interpretation gets inserted into the sentence.
     
 All styles are supposed to work on parts of words, too. Ie.:
-    ) ? ) Here we expect the present in presentation to be presented with bold highlighting
+    ) ^ ) Here we expect the present in presentation to be presented with bold highlighting
     ```demo jd
     **Present**ations are sometimes boring.
     ```
@@ -464,7 +481,7 @@ The color names are supported case insensitively.
 
 \ This is another blockquote. They work pretty much like they work in Markdown.
 
-) ? ) Blockquote title/caption
+) ^ ) Blockquote title/caption
 \ Another blockquote. This one is supposed to have the title "Blockquote title/caption"
 
 Note: This chapter is far from being finalized. All of it is subject to change.
@@ -478,7 +495,7 @@ that those are just different names for essentially the same need.
 
 That's why Jotdown has a unified syntax for titles and captions. Here's a demonstration on a table:
     
-    ) ? ) Small table that demonstrates how captions and titles work in Jotdown
+    ) ^ ) Small table that demonstrates how captions and titles work in Jotdown
     =  Column1        Column2
     |  Row1Col1       Row1Col2
     
@@ -605,7 +622,7 @@ If no specific amount of spacing is given, the spacing should work by changing
 the alignment properties of surrounding text and objects.
 
 Spacers can be made to work over multiple lines, by using this identation based syntax:
-    ) ? ) Centered
+    ) ^ ) Centered
     ```
         <.>I<.>:
             text
@@ -613,7 +630,7 @@ Spacers can be made to work over multiple lines, by using this identation based 
             multiple
             lines
     ```
-    ) ? ) Right aligned
+    ) ^ ) Right aligned
     ```
         <.>I:
             text
@@ -659,7 +676,7 @@ By convention right aligned text is indented with 16 spaces.
          And has multiple lines.
          As you can clearly see.
 
-By convention centered text is intended with 4 spaces.
+By convention centered text is indented with 4 spaces.
 
 In both cases these are merely conventions and writing down left aligned or
 centered text without those preceding spaces works fine, too.
@@ -692,7 +709,7 @@ One line table:
     | Key          | abcdef            | It's a bad key
     
 Table with caption:
-    ) ? )   Table example that shows how to use captions.
+    ) ^ )   Table example that shows how to use captions.
     = Column      Second Column       Third Column
     | One         Two                 Three
     | Four        Five                Six
@@ -940,7 +957,7 @@ This text is very lazy and now look at a centered image:
                                 <.>[[http://somecrazy.jpg 500x400 Alternative text]]<.>
     
 This text is very lazy and now look at a centered image, with a caption:
-    ) ? ) This is a test caption for an image
+    ) ^ ) This is a test caption for an image
     <.>[[http://somecrazy.jpg 500x400 Alternative text]]<.>
 
 This text is very lazy and now look at a right-aligned image:
@@ -1030,11 +1047,65 @@ Like it or not, they are a popular feature nowadays.
 
 Should GitHub style emojis be supported?
 
-============================
-) CHAPTER ) Extension system
-============================
+=================================
+) CHAPTER ) Extension development
+=================================
+Extension :=
+    Functionality that is based upon and/or rooted in the format
+    and functionalities defined by the Jotdown specification.
 
-X()
+)) Philosophy in regards to extensions
+    This specification will not satisfy all possible needs, because they are vastly different.
+    
+    Jotdown is intentionally designed with an openness for extensions,
+    and there are multiple techniques that can be used to extend the official Jotdown syntax.
+    
+    However, it would not be beneficial, if people started to use wildly differing extensions,
+    therefore popular and well designed extensions should be promoted to official features in
+    future versions of the Jotdown specification, or at least get listed as officially sanctioned extensions.
+    
+    If there are multiple extensions with the same basic purpose "in the wild",
+    then qualified and experienced users of Jotdown should have a vote on how to proceed,
+    it may be best to pick one particular extension as the officially supported one,
+    or to create an official feature specification, that merges the best aspects of all of those extensions.
+    
+    How this process will work is still to be determined, in the meantime [\AUTHORS] will reserve the
+    right to make such decisions single handidly.
+
+)) Derivative works
+    Anyone has the right to create implementations/tooling based on the Jotdown specification.
+    These implementations may choose whatever license they want to choose for their own source code,
+    although preferably they should choose Free and Open Source Software licenses.
+    
+    There's an exception to this rule in regards to the development of extensions[:=Extension] to Jotdown,
+    that absolutely **requires** those who develop extensions[:=Extension] for Jotdown to automatically grant
+    anyone else the right to use those same ideas and same functionalities that make up their extensions
+    without any restrictions or requirements in whatever way they please,
+    be it in text, be it in source code, be it as part of a product, or be it as part of a specification.
+    
+    This means you're granting the right, to the people maintaining the Jotdown specification,
+    to include these extension and the ideas entailed in them without any restrictions or requirements
+    in the official Jotdown specification.
+    
+    Furthermore you're granting endusers, users and developers of software (read: basically anyone) the right
+    to make use of those extensions without having to pay royalties or any other kind of compensation or restriction.
+    
+    If you're not acting **in the spirit** of these requirements,
+    which are integral to the licensing of the Jotdown specification,
+    it means you've developed functionalities built upon and/or derived from the Jotdown specification,
+    without adhering to the spirit and requirements of the Jotdown specification and its license.
+    As a consequence you may not call your Jotdown implementation a genuine Jotdown implementation,
+    and you may not call your implementation compliant with the Jotdown specification,
+    and you may not advertise or present your products with the Jotdown logo and/or branding.
+    
+    The reason for the upper requirements with regards to extension development is,
+    that it's one of the main goals of the Jotdown specification to evolve according to the needs
+    of the community of Jotdown users. This will only be possible, if the Jotdown specification is able
+    to absorb externally developed extensions in future iterations of the specification.
+    
+    These requirements, to play nice and within the spirit of the Jotdown specification and its license,
+    don't prevent you from developing extensions to Jotdown as you see fit,
+    or from distributing and/or selling such derivative works as you see fit.
 
 ================
 ) CHAPTER ) Math
@@ -1088,7 +1159,7 @@ Multiline comment with ID:
     The contents of comments with an ID, can be referenced.
     
     Example:
-        ) ? ) [\numberone]
+        ) ^ ) [\numberone]
         | One  | Row  | Table | With | Long  | Caption
         [ [\numberone]
 
@@ -1191,7 +1262,7 @@ Everything can be escaped by using triple quotes like this ```"""("""```.
 | `]`              At the beginning of a line, `]` is a special character.    `]]`
 | `~`              At the beginning of a line, `~` is a special character.    `~~`
 
-) ? ) special escape character combinations
+) ^ ) special escape character combinations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 = Combination      Result          HTML
 | (C)              ©               &#169;
