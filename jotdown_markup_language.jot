@@ -1,7 +1,8 @@
 =================================
 ) JOTDOWN ) Jotdown Specification
 =================================
-) AUTHORS ) Tobias Gläßer, Nobody Else
+) AUTHORS ) Tobias Gläßer
+) AUTHORS } Nobody Else
 ) CREATED ) 2020/08/04 
 ) LICENSE ) permissive FOSS license / attribution required
 ) VERSION ) 0.1
@@ -25,15 +26,15 @@ The guiding principles are:
  - The raw format should look **pleasing on the eye**, albeit that's subjective.
  - The rules must be *consistent*, to make processing straightforward.
  - Allow for **stylistic freedoms**, such as indentation sizes, to accomodate different tastes and needs.
- - Should have all features (not syntax) of //Markdown/Commonmark// 1.0.
- - Should have most features (not syntax) of //Asciidoc//.
- - Should look into adopting the planning features from //Orgmode//.
+ - Should have all features (not syntax) of %%Markdown/Commonmark%% 1.0.
+ - Should have most features (not syntax) of %Asciidoc%.
+ - Should look into adopting the planning features from %Orgmode%.
  - Should contain often requested features in other markup languages, like **math support**.
  - Should be **extendable**.
  
 Scope:
     Because Jotdown aims to be a replacement for many use cases of Markdown and Asciidoc among others,
-    the scope for which Jotdown could be of use is large. Usecases are:
+    the scope for which Jotdown could be of use is large. Suggested usecases:
      - Ebooks
      - Documentation
      - Websites
@@ -48,13 +49,48 @@ Scope:
 This document is the Jotdown specification, which is itself written in Jotdown.
 
 ======================================================
+) CHAPTER ) Frequently asked questions
+======================================================
+??? How is Jotdown different from Markdown/Commonmark?
+    - Jotdown supports many features by default, for which you need extensions in Markdown/Commonmark:
+      ie. tables, faqs, table of contents, embedding media, comments, boxes, demoing code
+    - Jotdown has features for the creation of books and documentation
+??? How is Jotdown different from Asciidoc?
+    - Jotdown's syntax is geared towards being readable without much or no preknowledge of the syntax,
+      this is a subjective measure, however I think that when reading Asciidoc documents 
+      the experience is less intuitive for uninitiated readers.
+    - Jotdown aims to absorb all or most Asciidoc features. Asciidoc is richer in features than Markdown.
+??? How is Jotdown different from Orgmode?
+    - Orgmode has different syntax.
+    - Currently Orgmode has many advanced planning/scheduling features that are lacking in Jotdown.
+      - Jotdown aims to support some of those features, or even all of them,
+        but as of now this hasn't happened yet.
+??? Where does the name Jotdown come from?
+    - %%To jot something down%% is an expression in English for quickly writing something down.
+    - It is also in line with Markdown's naming scheme.
+??? What kind of problems is Jotdown trying to solve?
+    - Similar syntax should consistently be used for similar behavior.
+      ie. `[string]` in jotdown is always used for links or references to `string`,
+      while `[[string]]` is always for embedding the stuff linked to or referenced to by `string`.
+    - Jotdown intends to be a lightweight markup language for widely different domains:
+      ie. creating websites, documentation, (e)books, planning/TODOs 
+??? How is this specification developed?
+    - Currently the specification is in an alpha stage and some aspects of it are subject to change.
+    - Jotdown is designed with many domains of usage in mind, therefore it is to be expected,
+      that with continued development, new features will be added to this specification.
+    - Feature requests are welcome. Of course, there's a limit to what can end up in the official specification,
+      and some features should better be provided through extensions.
+??? Can Jotdown be supported in proprietary products?
+    - Yes, just please call the Jotdown support `Jotdown` or `Jotdown markup` in your products.
+
+======================================================
 ) CHAPTER ) Tooling
 ======================================================
-Tooling does currently ([\CREATED]) not exist.
+Tooling is currently ([\CREATED]) non-existend.
 
-Anyone is welcome to develop their own Jotdown tooling based on specification.
+Anyone is welcome to develop their own Jotdown tooling based on this specification.
 
-If you do so, please credit me for creating this specification.
+If you do so, please credit me with creating this specification.
 
 Here are some ideas on what the tooling could or should be like:
  - The parser shouldn't fail due to ill-formated documents. It should instead pass through ill formated segments as is,
@@ -66,9 +102,9 @@ Here are some ideas on what the tooling could or should be like:
  - Targeting output to HTML5, Markdown, Asciidoc and pandoc's internal format is highly desirable.
  - The tools ideally will be licensed under a permissive FOSS license, so they can get used by anyone.
 
-========================================================
-) CHAPTER ) File extension and jotdown alternative names
-========================================================
+==========================================================
+) CHAPTER ) File extension and jotdown's alternative names
+==========================================================
 )) File extensions:
     The recommended file extension for Jotdown files is `jot`.
 
@@ -147,7 +183,7 @@ Here are some ideas on what the tooling could or should be like:
 
     These are key-value pairs unique to a user's system, that are passed through.
     
-    As Jotdown must work cross-platform, these values can differ from the name they have in the user's OS.
+    As Jotdown must work cross-platform, these key names can differ from the name they have in the user's OS.
     
     = Key                   Description
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -222,14 +258,14 @@ Book style:
     | MINUTIA                   SUBSUBSECTION, MINISUB, HYPOSUB, DETAILS
     | NEWPAGE                   PAGE
     
-    Especially the counting aliases for BIGPART; like PARTONE, PARTTWO and PARTTHREE may be useful,
-    as those aren't merely functional, they are meaningful at the same time.
+    Especially the counting aliases for BIGPART; like 1stPart, 2ndPart and 3rdPart may be useful,
+    as those aren't merely functional, they increase the readability of the document, as well. 
     
-    Finally there's the dynamic type of book style subsection with the `)) Heading text` syntax.
-    It always generates a subsection of whatever type of section it currently is used in.
+    Finally there're the dynamic book style subsections with the `)) Heading text` syntax.
+    They always generate a subsection of whatever type of static section they are used in.
     So if it's used in a CHAPTER, it starts a new SECTION, if it's used in a SECTION,
     it starts a new SUBITEM, and so on and so forth.
-    The clear advantage is that you have to type less, and in some instances it looks better in the raw format.
+    The advantage is that you have to type less, and in some instances it looks slicker, too.
     
     There are two more kinds of dynamic subsection syntax, one for sub-sub-sections with syntax `({ Heading text`,
     and one for sub-sub-sub-sections with syntax `([ Heading text`. 
@@ -309,8 +345,18 @@ Literal:
     The red '''**fox** jumps''' around.
 
 Cursive/Italic:
-    The red /fox/ jumps around. (For single words only)
-    The red //fox jumps// around. (For multiple words)
+    The red %fox% jumps around. (For single words only)
+    The red %%fox jumps%% around. (For multiple words)
+    
+    NOTE:
+        Initially I was going to use slashes for the cursive font style,
+        but since slashes (`/text/`) get frequently used in text,
+        for example when refering to a path (i.e. /etc/ or /home/) or when
+        listing different alternatives (red/green/blue), there'd be a higher
+        likelihood of running into conflicts with this character,
+        and an increased need for the use of escaping.
+        `%` shouldn't really be harder to type, and has that tilted look,
+        which is why it was chosen.
   
 Strike-through:
     The red ~fox~ jumps around. (For single words only)
@@ -333,16 +379,16 @@ Colored foreground:
     The red Red\\fox jumps\\ around. (For multiple words)
   
 Colored background:
-    The red !Yellow\fox\ jumps around. (For single words only)
-    The red !Yellow\\fox jumps\\ around. (For multiple words)
+    The red .Yellow\fox\ jumps around. (For single words only)
+    The red .Yellow\\fox jumps\\ around. (For multiple words)
 
 Colored foreground and background:
-    The red Red!Yellow\fox\ jumps around. (For single words only)
-    The red Red!Yellow\\fox jumps\\ around. (For multiple words)
+    The red Red.Yellow\fox\ jumps around. (For single words only)
+    The red Red.Yellow\\fox jumps\\ around. (For multiple words)
 
 Colored foreground and background using hex values:
-    The red ff0000!ffff00\fox\ jumps around. (For single words only)
-    The red ff0000!ffff00\\fox jumps\\ around. (For multiple words)
+    The red ff0000.ffff00\fox\ jumps around. (For single words only)
+    The red ff0000.ffff00\\fox jumps\\ around. (For multiple words)
     - The hex codes are case insensitive, thus FF0000 and ff0000 work the same.
 
 Monospace:
@@ -377,7 +423,7 @@ User style macros:
 
 How user style macros work:
     - the syntax for defining a user style macro is `) ::STYLE ) JotdownJAYDEEJotdown`
-    - JAYDEE is the Jotdown content before the macro is applied, here `amazing bold red`
+    - JAYDEE is the raw Jotdown content before the macro is applied, ie. `amazing bold red`
     - after JAYDEE is inserted the Jotdown gets interpreted
     - the result of that Jotdown interpretation gets inserted into the sentence.
     
@@ -393,7 +439,7 @@ This is an important constraint in the pursuit of keeping parsers from becoming 
 Nesting of styles:
     Hello **bold VVcapitalsVV rule** the world.
     Hello **VVbold capitals ruleVV** the world.
-    Hello Green&Red\\**VVbold capitals ruleVV**\\ the world.
+    Hello Green.Red\\**VVbold capitals ruleVV**\\ the world.
 
 NOTE:
     It is likely that Jotdown parsers will be able to make syntax work for multiple words,
@@ -409,29 +455,6 @@ NOTE:
 See: https://www.w3schools.com/colors/colors_groups.asp
 
 The color names are supported case insensitively.
-
-==================================
-) CHAPTER ) #code ) Embedding code
-==================================
-
-Default:
-    ```
-    #!/bin/bash
-    echo "hello"
-    ```
-
-With specified language:
-    ```nim
-    echo "hello"
-    ```
-
-Inline:
-    Try ```echo "hello"```.
-    Try nim```echo "hello"```.
-
-When the code's language is defined, the generated output may contain highlighting for that code.
-
-This syntax was copied from Markdown, because it works well.
 
 =======================
 ) CHAPTER ) Blockquotes
@@ -509,6 +532,18 @@ Here's an example *without* leading whitespace:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 - This is a bullet list
 - without whitespaces infront.
+
+===========================================
+) CHAPTER ) Questions and answers
+===========================================
+
+This feature can be used to create FAQs.
+
+Example:
+    ```??? Do you love Jotdown?```
+           Yes, of course!
+       ??? How much do you love Jotdown?```
+           Almost infinitely...```
 
 ===========================================
 ) CHAPTER ) Input fields and user interface
@@ -726,12 +761,15 @@ For table type two, or TTT, `==` signifies a column, that can contain multiple r
 separated by newlines starting with a `|`.
 TTT may be easier to write in some cases, and exists purely for convenience.
 
-=================
-) CHAPTER ) Links
-=================
+========================================
+) CHAPTER ) Links, references, footnotes
+========================================
 
-Jotdown allows for great flexibility in how links can be formatted,
-because it's a feature that is frequently used, and therefore convenience is ranked higher than consistency.
+)) Links
+~~~~~~~~
+
+Jotdown allows for ample flexibility in how links can be formatted,
+since it's a frequently used feature, convenience is ranked higher than consistency.
 
 Simple automatic links:
     ```
@@ -750,16 +788,14 @@ Linktext:
     [http://google.com]        (Description text not necessary)
     ```
   
-======================
-) CHAPTER ) References
-======================
+)) References
+~~~~~~~~~~~~~~~~~~~~~~
   
 [\CHAPTER\References References to this chapter.] 
 [\CHAPTER\Links References to Links chapter.] 
 
-=====================
-) CHAPTER ) Footnotes
-=====================
+)) Footnotes
+~~~~~~~~~~~~~~~~~~~~~
 
 This sentence is followed by a footnote.[1](http://www.google.com[Google])
 
@@ -807,32 +843,6 @@ Tip/Hint:
 
 All boxes are written with capital letters and have exactly 4 letters,
 so that they are more easily distinguished.
-
-===========================
-) CHAPTER ) Embedding media
-===========================
-
-This text is very lazy and now look at an image:
-[http://somecrazy.jpg Alternative text]
-
-This text is very lazy and now look at an image:
-[http://somecrazy.jpg 500x400 Alternative text]
-
-This text is very lazy and now look at a centered image:
-                                <.>[http://somecrazy.jpg 500x400 Alternative text]<.>
-    
-This text is very lazy and now look at a centered image, with a caption:
-    ) ? ) This is a test caption for an image
-    <.>[http://somecrazy.jpg 500x400 Alternative text]<.>
-
-This text is very lazy and now look at a right-aligned image:
-                >>[http://somecrazy.jpg 500x400 Alternative text]
-
-Embedding a YouTube video:
-[http://www.youtube.com/... Alternative text]
-
-Embedding a YouTube video:
-[http://www.youtube.com/... 500x400 Alternative text]
 
 =========================
 ) CHAPTER ) Date and time
@@ -886,8 +896,7 @@ Content breaks:
     .~~~.
     ~
     ```
-    Line of length 3 or greater (not counting leading identations) that contains at least one `~`, and any
-    amount of either `_` or `-` or `.` characters, with no unspecified characters in the line.
+    Line of length 3 or greater (not counting leading identations) that contains at least one `~`, and any amount of either `_` or `-` or `.` characters, with no unspecified characters in the line.
     
     Contents breaks can be used to separate two lists or two tables, or a table from what follows after it,
     or for separating content from other content, without causing a new paragraph to be inserted.
@@ -915,24 +924,78 @@ Page break:
   XXX  
   ```
 
-===============================================
-) CHAPTER ) Including other documents and files
-===============================================
+==========================================
+) CHAPTER ) Embedding, sourcing, including
+==========================================
+)) #media ) Embedding media
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The content of this file will be sourced and passed through without modifications:
+This text is very lazy and now look at an image:
+[[http://somecrazy.jpg Alternative text]]
+
+This text is very lazy and now look at an image:
+[[http://somecrazy.jpg 500x400 Alternative text]]
+
+This text is very lazy and now look at a centered image:
+                                <.>[[http://somecrazy.jpg 500x400 Alternative text]]<.>
+    
+This text is very lazy and now look at a centered image, with a caption:
+    ) ? ) This is a test caption for an image
+    <.>[[http://somecrazy.jpg 500x400 Alternative text]]<.>
+
+This text is very lazy and now look at a right-aligned image:
+                >>[[http://somecrazy.jpg 500x400 Alternative text]]
+
+Embedding a YouTube video:
+[[http://www.youtube.com/... Alternative text]]
+
+Embedding a YouTube video:
+[[http://www.youtube.com/... 500x400 Alternative text]]
+
+)) #documents ) Embedding other documents and files
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The content of non-binary files will be sourced and passed through without modifications:
     ```[[/path/to/some/file]]```
 
-The content of this file will be interpreted as Jotdown:
-    ```[/path/to/some/file.jd]```
+The content of jotdown files will be interpreted as Jotdown:
+    ```[[/path/to/some/file.jd]]```
     
 The content of this file will be interpreted as Jotdown:
-    ```[/path/to/some/file text/jotdown]```
+    ```[[/path/to/some/file text/jotdown]]```
 
 The content of this file will be interpreted as Jotdown, chapter One will be included:
-    ```[/path/to/some/file.jd /CHAPTER/One]```
+    ```[[/path/to/some/file.jd [/CHAPTER/One]]]```
     
 The content of this file will be interpreted as Jotdown, chapter One will be included:
-    ```[/path/to/some/file text/jotdown /CHAPTER/One]```
+    ```[[/path/to/some/file text/jotdown [/CHAPTER/One]]]```
+
+)) #code ) Embedding code
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The """```""" syntax was copied from Markdown, because it works well.
+
+Default:
+    ```
+    #!/bin/bash
+    echo "hello"
+    ```
+
+With specified language:
+    ```nim
+    echo "hello"
+    ```
+
+Inline:
+    Try ```echo "hello"```.
+    Try nim```echo "hello"```.
+
+When the code's language is defined, the generated output may contain highlighting for that code.
+
+Embedding code from a file:
+    ```cpp[[/path/to/file]]```
+    
+Embedding specific lines of code from a file:
+    ```cpp[[/path/to/file lines:50-68]]```
 
 ================================
 ) CHAPTER ) Passing through HTML
